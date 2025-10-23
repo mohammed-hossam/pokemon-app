@@ -1,0 +1,3 @@
+const pokemonsRoutes = [];
+
+export { pokemonsRoutes };
