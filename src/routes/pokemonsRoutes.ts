@@ -1,3 +1,0 @@
-const pokemonsRoutes = [];
-
-export { pokemonsRoutes };
