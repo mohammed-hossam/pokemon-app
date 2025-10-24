@@ -6,7 +6,7 @@ import type {
 } from '@tanstack/react-query';
 import type { Mode } from '@main/constants';
 export interface GetObjectByIdProps {
-  id?: string;
+  id?: number | string;
 }
 
 export interface PagingProps {
@@ -31,6 +31,6 @@ export type InfiniteQueryOpts<
   'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
 >;
 
-export interface SearchQueries extends PagingProps {
+export interface SearchQueries extends PagingProps, GetObjectByIdProps {
   mode?: Mode;
 }

@@ -1,4 +1,3 @@
-// src/router/schema.ts
 import { createRootRoute, createRoute, type AnyRoute } from '@tanstack/react-router';
 import type { RootConfig, RouteConfig } from './types';
 
@@ -12,6 +11,7 @@ export function buildRouterTree(appRoutes: RootConfig) {
       const route = createRoute({
         getParentRoute: () => parent,
         path: cfg.path!,
+        id: cfg.id,
         component: cfg.component,
       });
       const kids = cfg.children ? buildChildren(route, cfg.children) : [];

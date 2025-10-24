@@ -12,8 +12,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
 function PokemonsList() {
-  const search: SearchQueries = useSearch({ from: '/' });
-  const navigate = useNavigate({ from: '/' });
+  const search: SearchQueries = useSearch({ from: '' });
+  const navigate = useNavigate();
 
   const mode = search.mode ?? MODES.PAGE;
   const page = Math.max(1, Number(search.page ?? 1));
@@ -87,6 +87,7 @@ function PokemonsList() {
           ) : (
             <div className="mt-6 flex flex-col items-center gap-3">
               <Button
+                variant={'black'}
                 type="button"
                 onClick={() => void infiniteQuery.fetchNextPage()}
                 disabled={isFetching || isLoading || !hasNextPage}
@@ -95,7 +96,7 @@ function PokemonsList() {
                   ? infiniteQuery.isFetchingNextPage
                     ? 'Loading…'
                     : 'Show more'
-                  : 'No more Pokémon'}
+                  : 'No more Pokemon'}
               </Button>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Showing <span className="font-medium">{listData.length}</span> of{' '}

@@ -1,16 +1,21 @@
-import { Layout } from '@main/components';
+import { Layout, DetailsLayout } from '@main/components';
 import type { RootConfig } from '@main/router';
-import { PokemonsList } from '@main/views';
+import { PokemonDetails, PokemonsList } from '@main/views';
+import { Outlet } from '@tanstack/react-router';
 
 export const appRoutes: RootConfig = {
-  component: Layout,
+  component: () => <Outlet />,
   children: [
     {
-      path: '/',
-      component: PokemonsList,
+      id: 'home',
+      path: '',
+      component: Layout,
+      children: [{ path: '/', component: PokemonsList }],
     },
     {
-      path: '/details',
+      path: 'details',
+      component: DetailsLayout,
+      children: [{ path: '/', component: PokemonDetails }],
     },
   ],
 } satisfies RootConfig;

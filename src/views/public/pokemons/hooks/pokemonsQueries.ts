@@ -1,6 +1,10 @@
 import { pageSize, QUERY_KEYS } from '@main/constants';
 import type { InfiniteQueryOpts, QueryOpts } from '@main/global.types';
-import { queryPokemons, type GetQueryPokemonsResponse } from '@main/views';
+import {
+  queryPokemons,
+  type GetQueryPokemonResponse,
+  type GetQueryPokemonsResponse,
+} from '@main/views';
 import {
   useInfiniteQuery,
   useQuery,
@@ -42,6 +46,18 @@ export function usePokemonsInfinite(
       const nextOffset = lastPageParam.offset + lastPageParam.limit;
       return nextOffset < count ? { offset: nextOffset, limit: lastPageParam.limit } : undefined;
     },
+    ...options,
+  });
+}
+
+export function usePokemonDetails(
+  params: Parameters<typeof queryPokemons.getOne>[0],
+  options?: QueryOpts<AxiosResponse<GetQueryPokemonResponse>, QueryKey>,
+) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.pokemons.POKEMON_DETAILS, params.id],
+    queryFn: () => queryPokemons.getOne(params),
+    enabled: Boolean(params.id),
     ...options,
   });
 }

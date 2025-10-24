@@ -5,7 +5,7 @@ import type { SearchQueries } from '@main/global.types';
 import { MODES } from '@main/constants';
 
 function Layout() {
-  const search: SearchQueries = useSearch({ from: '/' });
+  const search: SearchQueries = useSearch({ from: '' });
   const currentMode = search.mode ?? MODES.PAGE;
 
   return (

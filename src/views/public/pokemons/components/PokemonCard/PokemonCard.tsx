@@ -6,8 +6,8 @@ function PokemonCard({ p }: { p: Pokemon }) {
   return (
     <li key={p.id} className="list-none">
       <Link
-        to="/pokemon-details"
-        search={{ id: String(p.id) }}
+        to="/details"
+        search={{ id: p.id }}
         aria-labelledby={`poke-${p.id}-name`}
         className="
                 group block rounded-lg border border-zinc-200 bg-white p-3 shadow-sm
