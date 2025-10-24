@@ -6,7 +6,7 @@ import type {
   GetQueryPokemonResponse,
   GetQueryPokemonsParams,
   GetQueryPokemonsResponse,
-  Pockemon,
+  Pokemon,
 } from '@main/views';
 import type { AxiosResponse } from 'axios';
 
@@ -17,7 +17,7 @@ const queryPokemons = {
       { params },
     );
 
-    const items: Pockemon[] = res.data.results.map((r) => {
+    const items: Pokemon[] = res.data.results.map((r) => {
       const id = idFromUrl(r.url);
       return { id, name: r.name, image: BASE_URLS.pokemons.POKEMON_PIC(id), ...r };
     });

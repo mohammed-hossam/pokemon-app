@@ -3,3 +3,4 @@ export * from './hooks';
 export * from './PokemonDetails';
 export * from './PokemonsList';
 export * from './services';
+export * from './components';

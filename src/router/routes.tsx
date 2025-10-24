@@ -19,9 +19,5 @@ export const appRoutes: RootConfig = {
       path: 'pokemon-details',
       // component: About,
     },
-    //     {
-    //       path: '*',
-    //       component: () => <h2>Not Found</h2>,
-    //     },
   ],
 } satisfies RootConfig;
