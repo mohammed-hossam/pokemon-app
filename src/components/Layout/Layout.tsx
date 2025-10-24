@@ -21,15 +21,11 @@ function Layout() {
         <nav aria-label="View switch" className="mt-4">
           <ul className="inline-flex gap-2">
             <li>
-              <Button
-                asChild
-                variant={currentMode === MODES.PAGE ? 'default' : 'outline'}
-                size="sm"
-              >
+              <Button asChild variant={currentMode === MODES.PAGE ? 'black' : 'white'} size="sm">
                 <Link
                   to="/"
                   search={(prev: SearchQueries) => ({ ...prev, mode: MODES.PAGE })}
-                  aria-current={currentMode === MODES.PAGE ? 'page' : undefined}
+                  aria-current={currentMode === MODES.PAGE ? MODES.PAGE : undefined}
                 >
                   Page Controls
                 </Link>
@@ -39,13 +35,13 @@ function Layout() {
             <li>
               <Button
                 asChild
-                variant={currentMode === MODES.INFINITE ? 'default' : 'outline'}
+                variant={currentMode === MODES.INFINITE ? 'black' : 'white'}
                 size="sm"
               >
                 <Link
                   to="/"
                   search={(prev: SearchQueries) => ({ ...prev, mode: MODES.INFINITE })}
-                  aria-current={currentMode === MODES.INFINITE ? 'page' : undefined}
+                  aria-current={currentMode === MODES.INFINITE ? MODES.PAGE : undefined}
                 >
                   Infinite Scroll
                 </Link>

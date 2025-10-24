@@ -6,7 +6,7 @@ export interface GetObjectByIdProps {
 
 export interface PagingProps {
   page?: number;
-  size?: number;
+  limit?: number;
 }
 
 export type QueryOpts<Data, Key extends QueryKey = QueryKey, Err = Error> = Omit<
@@ -14,6 +14,6 @@ export type QueryOpts<Data, Key extends QueryKey = QueryKey, Err = Error> = Omit
   'queryKey' | 'queryFn'
 >;
 
-export interface SearchQueries {
+export interface SearchQueries extends PagingProps {
   mode?: Mode;
 }

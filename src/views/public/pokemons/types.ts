@@ -3,7 +3,7 @@ import type { GetObjectByIdProps } from '@main/global.types';
 // export interface PokemonDetailsProps {}
 
 export interface GetQueryPokemonsParams {
-  pageSize?: number;
+  limit?: number;
   offset?: number;
 }
 export interface GetQueryPokemonsResponse {
@@ -21,8 +21,8 @@ export type GetQueryPokemonParams = GetObjectByIdProps;
 export interface GetQueryPokemonResponse {
   count: number;
   next: string | null;
-  // previous: string | null;
-  // results: Pokemon[];
+  previous: string | null;
+  results: Pokemon[];
 }
 
 export interface Pokemon {

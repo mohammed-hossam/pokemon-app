@@ -13,6 +13,13 @@ const buttonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
+        black:
+          'bg-zinc-900 text-white border border-zinc-900 shadow-sm hover:bg-zinc-900/90 ' +
+          'dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100 dark:hover:bg-zinc-100/90',
+
+        white:
+          'bg-white text-zinc-700 border border-zinc-200 shadow-sm hover:bg-zinc-50 ' +
+          'dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-800 dark:hover:bg-zinc-800',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
@@ -24,7 +31,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'white',
       size: 'default',
     },
   },
