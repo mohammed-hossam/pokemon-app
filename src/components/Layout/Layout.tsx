@@ -12,7 +12,7 @@ function Layout() {
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white dark:from-zinc-900 dark:to-zinc-950">
       <header className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 text-center space-y-2">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          <span className="mr-2">⚡</span> Pokédex
+          <span className="mr-2">⚡</span> Pokedex
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
           Discover and explore Pokemon
@@ -40,7 +40,11 @@ function Layout() {
               >
                 <Link
                   to="/"
-                  search={(prev: SearchQueries) => ({ ...prev, mode: MODES.INFINITE })}
+                  search={(prev: SearchQueries) => ({
+                    ...prev,
+                    page: undefined,
+                    mode: MODES.INFINITE,
+                  })}
                   aria-current={currentMode === MODES.INFINITE ? MODES.PAGE : undefined}
                 >
                   Infinite Scroll

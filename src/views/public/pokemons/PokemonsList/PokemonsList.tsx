@@ -1,40 +1,52 @@
-import { ErrorView, Pagination } from '@main/components';
-import { pageSize } from '@main/constants';
+import { Button, ErrorView, Pagination } from '@main/components';
+import { MODES, pageSize } from '@main/constants';
 import type { SearchQueries } from '@main/global.types';
-import { PokemonRenderedCards, usePokemons } from '@main/views';
+import {
+  PokemonRenderedCards,
+  PokemonRenderedSkeletonCards,
+  usePokemons,
+  usePokemonsInfinite,
+  type Pokemon,
+} from '@main/views';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
 function PokemonsList() {
-  // const [page, setPage] = useState(1);
-  // const offset = (page - 1) * pageSize;
-
   const search: SearchQueries = useSearch({ from: '/' });
   const navigate = useNavigate({ from: '/' });
 
+  const mode = search.mode ?? MODES.PAGE;
   const page = Math.max(1, Number(search.page ?? 1));
   const offset = (page - 1) * pageSize;
-  const setPage = (next: number) => {
+  const isPageMode = mode === MODES.PAGE;
+
+  const setPage = (next: number) =>
     void navigate({
       to: '/',
       search: (prev: SearchQueries) => ({ ...prev, page: next }),
     });
-  };
-  const {
-    data: pokemonsList,
-    isLoading,
-    refetch,
-    isFetching,
-    isError,
-    error,
-  } = usePokemons({
-    limit: pageSize,
-    offset,
-  });
-  console.log(pokemonsList);
-  const data = pokemonsList?.data.results ?? [];
-  const totalCount = pokemonsList?.data.count ?? 0;
+
+  const pageQuery = usePokemons({ limit: pageSize, offset }, { enabled: isPageMode });
+
+  const infiniteQuery = usePokemonsInfinite(pageSize, { enabled: !isPageMode });
+
+  const isLoading = isPageMode ? pageQuery.isLoading : infiniteQuery.isLoading;
+  const isFetching = isPageMode ? pageQuery.isFetching : infiniteQuery.isFetching;
+  const isError = isPageMode ? pageQuery.isError : infiniteQuery.isError;
+  const error = (isPageMode ? pageQuery.error : infiniteQuery.error) as Error | undefined;
+  const refetch = isPageMode ? pageQuery.refetch : infiniteQuery.refetch;
+
+  // console.log(infiniteQuery.data); // this gives an array of the responses of every page
+  const listData: Pokemon[] = isPageMode
+    ? (pageQuery.data?.data.results ?? [])
+    : (infiniteQuery.data?.pages.flatMap((p) => p.data.results) ?? []);
+
+  const totalCount = isPageMode
+    ? (pageQuery.data?.data.count ?? 0)
+    : (infiniteQuery.data?.pages.at(-1)?.data.count ?? 0);
+
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const hasNextPage = isPageMode ? page < totalPages : Boolean(infiniteQuery.hasNextPage);
 
   return (
     <section className="mt-8" aria-labelledby="pokemon-grid" aria-busy={isLoading || isFetching}>
@@ -43,42 +55,54 @@ function PokemonsList() {
       </h2>
 
       <p role="status" aria-live="polite" className="sr-only">
-        {isLoading ? 'Loading Pokemons' : `${data.length} result${data.length === 1 ? '' : 's'}`}
+        {isLoading
+          ? 'Loading Pokemons'
+          : `${listData.length} result${listData.length === 1 ? '' : 's'}`}
       </p>
 
       {isError ? (
         <ErrorView message={error?.message ?? 'Unknown error'} onRetry={refetch} />
-      ) : isLoading ? (
-        ' loading'
+      ) : isLoading || isFetching ? (
+        <PokemonRenderedSkeletonCards count={isPageMode ? pageSize : 12} />
       ) : (
         <>
-          {isFetching && (
-            <div
-              aria-hidden="true"
-              className="mb-3 h-1 w-full overflow-hidden rounded bg-zinc-200 dark:bg-zinc-800"
-              title="Refreshing…"
-            >
-              <div className="h-full w-1/3 animate-[loading_1.2s_ease-in-out_infinite] bg-indigo-500/70" />
-            </div>
-          )}
           <ErrorBoundary fallback={'error'}>
-            <PokemonRenderedCards data={data} />
+            <PokemonRenderedCards data={listData} />
           </ErrorBoundary>
 
-          <div className="mt-6 flex flex-col items-center gap-3">
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              onChange={setPage}
-              isDisabled={isFetching || isLoading}
-            />
-
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Page <span className="font-medium">{page}</span> of{' '}
-              <span className="font-medium">{totalPages}</span> (
-              <span className="font-medium">{data.length}</span> Pokemon shown)
-            </p>
-          </div>
+          {isPageMode ? (
+            <div className="mt-6 flex flex-col items-center gap-3">
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={setPage}
+                isDisabled={isFetching || isLoading}
+              />
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                Page <span className="font-medium">{page}</span> of{' '}
+                <span className="font-medium">{totalPages}</span> (
+                <span className="font-medium">{listData.length}</span> Pokémon shown)
+              </p>
+            </div>
+          ) : (
+            <div className="mt-6 flex flex-col items-center gap-3">
+              <Button
+                type="button"
+                onClick={() => void infiniteQuery.fetchNextPage()}
+                disabled={isFetching || isLoading || !hasNextPage}
+              >
+                {hasNextPage
+                  ? infiniteQuery.isFetchingNextPage
+                    ? 'Loading…'
+                    : 'Show more'
+                  : 'No more Pokémon'}
+              </Button>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                Showing <span className="font-medium">{listData.length}</span> of{' '}
+                <span className="font-medium">{totalCount}</span>
+              </p>
+            </div>
+          )}
         </>
       )}
     </section>

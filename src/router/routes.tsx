@@ -8,16 +8,9 @@ export const appRoutes: RootConfig = {
     {
       path: '/',
       component: PokemonsList,
-      // component: Home,
     },
     {
-      path: 'pokemons-list-pagination',
-      // path: 'pokemons-list-showmore',
-      component: PokemonsList,
-    },
-    {
-      path: 'pokemon-details',
-      // component: About,
+      path: '/details',
     },
   ],
 } satisfies RootConfig;
