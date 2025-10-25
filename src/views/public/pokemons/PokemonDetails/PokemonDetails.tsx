@@ -1,7 +1,8 @@
 import { useSearch } from '@tanstack/react-router';
-import { ErrorView } from '@main/components';
+import { ErrorView, Loader } from '@main/components';
 import { PokemonDetailsCard, usePokemonDetails } from '@main/views';
 import type { SearchQueries } from '@main/global.types';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export function PokemonDetails() {
   const search: SearchQueries = useSearch({ from: '/details' });
@@ -12,7 +13,7 @@ export function PokemonDetails() {
   if (isLoading || isFetching) {
     return (
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
-        <p>loading....</p>
+        <Loader />
       </div>
     );
   }
@@ -35,7 +36,9 @@ export function PokemonDetails() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
-      <PokemonDetailsCard poke={poke} />
+      <ErrorBoundary fallback={'error'}>
+        <PokemonDetailsCard poke={poke} />
+      </ErrorBoundary>
     </div>
   );
 }

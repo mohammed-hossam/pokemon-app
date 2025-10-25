@@ -1,13 +1,7 @@
-import { Button, ErrorView, Pagination } from '@main/components';
+import { Button, ErrorView, Loader, Pagination } from '@main/components';
 import { MODES, pageSize } from '@main/constants';
 import type { SearchQueries } from '@main/global.types';
-import {
-  PokemonRenderedCards,
-  PokemonRenderedSkeletonCards,
-  usePokemons,
-  usePokemonsInfinite,
-  type Pokemon,
-} from '@main/views';
+import { PokemonRenderedCards, usePokemons, usePokemonsInfinite, type Pokemon } from '@main/views';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -35,6 +29,7 @@ function PokemonsList() {
   const isError = isPageMode ? pageQuery.isError : infiniteQuery.isError;
   const error = (isPageMode ? pageQuery.error : infiniteQuery.error) as Error | undefined;
   const refetch = isPageMode ? pageQuery.refetch : infiniteQuery.refetch;
+  const loading = isLoading || isFetching;
 
   // console.log(infiniteQuery.data); // this gives an array of the responses of every page
   const listData: Pokemon[] = isPageMode
@@ -47,63 +42,70 @@ function PokemonsList() {
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const hasNextPage = isPageMode ? page < totalPages : Boolean(infiniteQuery.hasNextPage);
-
+  console.log(loading);
   return (
-    <section className="mt-8" aria-labelledby="pokemon-grid" aria-busy={isLoading || isFetching}>
+    <section className="mt-8" aria-labelledby="pokemon-grid" aria-busy={loading}>
       <h2 id="pokemon-grid" className="sr-only">
         Pokemon list
       </h2>
 
       <p role="status" aria-live="polite" className="sr-only">
-        {isLoading
+        {loading
           ? 'Loading Pokemons'
           : `${listData.length} result${listData.length === 1 ? '' : 's'}`}
       </p>
 
       {isError ? (
         <ErrorView message={error?.message ?? 'Unknown error'} onRetry={refetch} />
-      ) : isLoading || isFetching ? (
-        <PokemonRenderedSkeletonCards count={isPageMode ? pageSize : 12} />
       ) : (
         <>
           <ErrorBoundary fallback={'error'}>
-            <PokemonRenderedCards data={listData} />
-          </ErrorBoundary>
+            <PokemonRenderedCards
+              data={listData}
+              loading={loading}
+              pageSize={pageSize}
+              isPageMode={isPageMode}
+            />
 
-          {isPageMode ? (
             <div className="mt-6 flex flex-col items-center gap-3">
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                onChange={setPage}
-                isDisabled={isFetching || isLoading}
-              />
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Page <span className="font-medium">{page}</span> of{' '}
-                <span className="font-medium">{totalPages}</span> (
-                <span className="font-medium">{listData.length}</span> Pokémon shown)
-              </p>
+              {loading ? (
+                <Loader />
+              ) : isPageMode ? (
+                <>
+                  <Pagination
+                    page={page}
+                    totalPages={totalPages}
+                    onChange={setPage}
+                    isDisabled={loading}
+                  />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Page <span className="font-medium">{page}</span> of{' '}
+                    <span className="font-medium">{totalPages}</span> (
+                    <span className="font-medium">{listData.length}</span> Pokémon shown)
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant={'black'}
+                    type="button"
+                    onClick={() => void infiniteQuery.fetchNextPage()}
+                    disabled={loading || !hasNextPage}
+                  >
+                    {hasNextPage
+                      ? infiniteQuery.isFetchingNextPage
+                        ? 'Loading…'
+                        : 'Show more'
+                      : 'No more Pokemon'}
+                  </Button>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Showing <span className="font-medium">{listData.length}</span> of{' '}
+                    <span className="font-medium">{totalCount}</span>
+                  </p>
+                </>
+              )}
             </div>
-          ) : (
-            <div className="mt-6 flex flex-col items-center gap-3">
-              <Button
-                variant={'black'}
-                type="button"
-                onClick={() => void infiniteQuery.fetchNextPage()}
-                disabled={isFetching || isLoading || !hasNextPage}
-              >
-                {hasNextPage
-                  ? infiniteQuery.isFetchingNextPage
-                    ? 'Loading…'
-                    : 'Show more'
-                  : 'No more Pokemon'}
-              </Button>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Showing <span className="font-medium">{listData.length}</span> of{' '}
-                <span className="font-medium">{totalCount}</span>
-              </p>
-            </div>
-          )}
+          </ErrorBoundary>
         </>
       )}
     </section>
