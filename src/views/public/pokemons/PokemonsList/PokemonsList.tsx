@@ -42,7 +42,7 @@ function PokemonsList() {
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const hasNextPage = isPageMode ? page < totalPages : Boolean(infiniteQuery.hasNextPage);
-  console.log(loading);
+
   return (
     <section className="mt-8" aria-labelledby="pokemon-grid" aria-busy={loading}>
       <h2 id="pokemon-grid" className="sr-only">

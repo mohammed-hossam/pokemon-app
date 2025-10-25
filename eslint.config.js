@@ -1,10 +1,7 @@
-// eslint.config.js
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import { defineConfig, globalIgnores } from 'eslint/config';
-// import { fileURLToPath } from 'url';
-// import path, { dirname, join } from 'path';
 
 // Plugins
 import reactPlugin from 'eslint-plugin-react';
@@ -14,10 +11,6 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
 import prettierPlugin from 'eslint-plugin-prettier';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
-
-// — polyfill __dirname in ESM —
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
 
 // Combine all your environments into globals
 const allGlobals = {

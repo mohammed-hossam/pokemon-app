@@ -8,7 +8,6 @@ export function PokemonDetails() {
   const search: SearchQueries = useSearch({ from: '/details' });
   const id = search.id;
   const { data, isLoading, isFetching, isError, error, refetch } = usePokemonDetails({ id });
-  console.log(isError);
   const poke = data?.data;
   if (isLoading || isFetching) {
     return (

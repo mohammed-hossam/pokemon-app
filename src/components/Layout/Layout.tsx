@@ -1,4 +1,3 @@
-// Layout.tsx
 import { Outlet, Link, useSearch } from '@tanstack/react-router';
 import { Button } from '@main/components';
 import type { SearchQueries } from '@main/global.types';

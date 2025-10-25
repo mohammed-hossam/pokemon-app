@@ -10,4 +10,3 @@ export const MODES = {
 export type Mode = ModeValue;
 
 export { pageSize };
-// export type { Mode };
